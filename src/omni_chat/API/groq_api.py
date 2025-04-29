@@ -1,27 +1,20 @@
+from pprint import pprint
+
 from groq import Groq
 
-from typing import Iterator
+from omni_chat.utils.color_text import color_text
 
 from . import api_key
-from ..utils.color_text import color_text
-from ..utils.text_utils import clear_screen
 
 
 class Groq_API:
-    def __init__(self, model_name: str = ""):
-        self.client = Groq(api_key=api_key.GROQ_API_KEY)
+    def __init__(self, model_name: str = "", stream: bool = False):
         self.chat_history = []
         self.model_name = model_name
-        clear_screen()
-        print(
-            color_text(
-                f'You are chatting with {model_name} model. Type "<exit>" to exit.\n\n',
-                "yellow",
-            )
-        )
-        self.stream = True
+        self.stream = stream
+        self.client = Groq(api_key=api_key.GROQ_API_KEY)
 
-    def chat(self, user_input: str) -> str | Iterator[str]:
+    def call_llm_api(self, user_input: str):
         """
         Chat with the assistant.
         
@@ -45,12 +38,9 @@ class Groq_API:
         response = self.client.chat.completions.create(
             messages=self.chat_history, model=self.model_name, stream=self.stream
         )
-        if self.stream:
-            return response
-        else:
-            return response.choices[0].message.content
+        return response
 
-    def call_api(self):
+    def chat(self):
         """
         Call the GROQ API to chat with the assistant.
         
@@ -73,28 +63,27 @@ class Groq_API:
             if user_input == "<exit>":
                 break
             print()
-            respont_text = ""
             print(color_text("(assistant) >>> ", "blue"), end="")
-            response = self.chat(user_input)
+            response = self.call_llm_api(user_input)
+            complete_response = ""
             if self.stream:
                 for chunk in response:
                     if chunk.choices[0].delta.content:
-                        respont_text += chunk.choices[0].delta.content
-                        print(
-                            color_text(chunk.choices[0].delta.content, "blue"), end=""
-                        )
+                        print(chunk.choices[0].delta.content, end="", flush=True)
+                        complete_response += chunk.choices[0].delta.content
+                print()
             else:
-                respont_text = response
-
-            self.chat_history.append({"role": "assistant", "content": respont_text})
-            print("\n")
-
+                complete_response = response.choices[0].message.content
+                print(complete_response)
+            self.chat_history.append(
+                {"role": "assistant", "content": complete_response}
+            )
         return self.chat_history
 
 
 if __name__ == "__main__":
-    import sys
+    from omni_chat.utils.argparse import arg_parser
 
-    print(sys.path)
-    groq_api = Groq_API()
-    groq_api.call_api()
+    args = arg_parser()
+    open_router_instance = Groq_API(model_name="gemma2-9b-it", stream=args.stream)
+    pprint(open_router_instance.chat())

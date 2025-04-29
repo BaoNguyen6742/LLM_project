@@ -1,14 +1,15 @@
+import math
 import os
 import sys
 
-from .color_text import color_text
+# sys.tracebacklimit = 0
 
 
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
-def show_models(client_name, model_list: list[str]) -> str:
+def show_models(model_list: list[str]) -> str:
     """
     Show the models available in the list in group of 10.
     
@@ -26,17 +27,14 @@ def show_models(client_name, model_list: list[str]) -> str:
     - model_name : `str` \\
         The name of the selected model.
     """
-    max_split_idx = len(model_list) // 10
+    max_split_idx = math.ceil(len(model_list) / 10) - 1
     current_split = 0
-    print("Available models:")
     while True:
         clear_screen()
-        print(color_text(f"Using client: {client_name}", "blue"))
-        end_split = min(current_split * 10 + 9, len(model_list))
-        print(f"Available models ({current_split * 10 + 1}-{end_split}):")
-        for i, model_name in enumerate(
-            model_list[current_split * 10 : end_split], start=1
-        ):
+        print("Available models:")
+        begin_split = current_split * 10
+        end_split = min(len(model_list), begin_split + 10)
+        for i, model_name in enumerate(model_list[begin_split:end_split], start=1):
             print(f"{i}. {model_name}")
         print()
         print(
@@ -56,11 +54,10 @@ def show_models(client_name, model_list: list[str]) -> str:
                 continue
         elif user_input.isdigit():
             try:
-                assert 1 <= int(user_input) <= end_split - current_split * 10 + 1
-                model_name = model_list[current_split * 10 + int(user_input) - 1]
-                print(f"Selected model: {model_name}")
+                assert 1 <= int(user_input) <= end_split - begin_split + 1
+                model_name = model_list[begin_split + int(user_input) - 1]
                 return model_name
-            except:
+            except AssertionError:
                 print(f"\nInvalid input: {user_input}. Please enter a valid number.")
                 sys.exit(1)
         else:
