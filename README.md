@@ -10,6 +10,7 @@ To use Omni Chat, you need to set up the environment and install the required de
 
 - Python 3.12 or higher
 - API keys for the platforms you want to connect to (Google AI Studio, OpenRouter and Groq)
+- uv from Astral
 
 ### Installation
 
@@ -18,7 +19,7 @@ To use Omni Chat, you need to set up the environment and install the required de
 2. Run the following command to install the required dependencies:
 
     ```bash
-    pip install -r requirements.txt
+    uv sync
     ```
 
 3. Set up your environment variables for the API keys. You need create a `.env` file in the `.env` directory of the project and add the following lines:
@@ -32,7 +33,6 @@ To use Omni Chat, you need to set up the environment and install the required de
 4. Run the application:
 
     ```bash
-    python main.py
+    cd src
+    uv run main.py
     ```
-
-
