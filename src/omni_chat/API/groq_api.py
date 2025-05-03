@@ -2,8 +2,7 @@ from pprint import pprint
 
 from groq import Groq
 
-from omni_chat.utils.color_text import color_text
-
+from ..utils.color_text import color_text
 from . import api_key
 
 
@@ -82,7 +81,7 @@ class Groq_API:
 
 
 if __name__ == "__main__":
-    from omni_chat.utils.argparse import arg_parser
+    from ..utils.argparse import arg_parser
 
     args = arg_parser()
     open_router_instance = Groq_API(model_name="gemma2-9b-it", stream=args.stream)

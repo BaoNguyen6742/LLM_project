@@ -33,6 +33,11 @@ To use Omni Chat, you need to set up the environment and install the required de
 4. Run the application:
 
     ```bash
-    cd src
-    uv run main.py
+    uv run src/main.py
     ```
+
+    - Add `-s` to use streaming model for model output, this will be faster than the default way of waiting for the whole response to complete before printing out.
+
+        ```bash
+        uv run src/main.py -s
+        ```

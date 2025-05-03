@@ -3,8 +3,7 @@ from pprint import pprint
 
 from google import genai
 
-from omni_chat.utils.color_text import color_text
-
+from ..utils.color_text import color_text
 from . import api_key
 
 os.environ["GRPC_VERBOSITY"] = "ERROR"
@@ -77,7 +76,7 @@ class GG_AI_Studio_API:
 
 
 if __name__ == "__main__":
-    from omni_chat.utils.argparse import arg_parser
+    from ..utils.argparse import arg_parser
 
     args = arg_parser()
     gg_api = GG_AI_Studio_API("gemini-1.5-flash", args.stream)

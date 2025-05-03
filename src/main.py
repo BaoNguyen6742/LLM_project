@@ -10,7 +10,7 @@ from omni_chat.utils.text_utils import clear_screen, show_models
 def main():
     clear_screen()
     args = arg_parser()
-    with open(Path("./omni_chat/model/llm_models_list.yaml"), "r") as file:
+    with open(Path("./src/omni_chat/model/llm_models_list.yaml"), "r") as file:
         config = yaml.safe_load(file)
     print("Select a chat client: (default is Groq, Enter for default)")
     for idx, client in enumerate(config.keys()):
@@ -34,8 +34,6 @@ def main():
             return
 
     client_name = list(config.keys())[client_choice - 1]
-    model_list = list(config[client_name]["models"])
-    model_selected = show_models(client_name, model_list)
 
     if client_name == "GG_AI_Studio":
         from omni_chat.API.gg_ai_studio_api import GG_AI_Studio_API as LLM_API
